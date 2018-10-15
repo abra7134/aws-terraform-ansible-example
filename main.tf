@@ -1,15 +1,15 @@
 provider "aws" {
-  region     = "eu-central-1"
+  region     = "${var.aws_region}"
   version    = "~> 1.40"
 }
 
-data "aws_ami" "debian9" {
+data "aws_ami" "app" {
   most_recent = true
-  owners      = ["379101102735"] # Official Debian account
+  owners      = ["${var.aws_ami_owner_id}"]
 
   filter {
     name   = "name"
-    values = ["debian-stretch-*"]
+    values = ["${var.aws_ami_filter_name}"]
   }
 
   filter {
@@ -19,7 +19,7 @@ data "aws_ami" "debian9" {
 }
 
 resource "aws_vpc" "app" {
-  cidr_block           = "192.168.0.0/16"
+  cidr_block           = "${var.aws_vpc_cidr_block}"
   enable_dns_hostnames = true
 
   tags {
@@ -29,7 +29,7 @@ resource "aws_vpc" "app" {
 
 resource "aws_subnet" "app" {
   vpc_id     = "${aws_vpc.app.id}"
-  cidr_block = "192.168.2.0/24"
+  cidr_block = "${var.aws_vpc_cidr_block}"
 
   tags {
     Name = "Application Subnet"
@@ -64,7 +64,7 @@ resource "aws_route_table_association" "app" {
 
 resource "aws_security_group" "app" {
   name        = "app_ssh_http"
-  description = "Allow SSH, HTTP inbound traffic"
+  description = "Allow SSH, HTTP inbound traffic for application"
   vpc_id      = "${aws_vpc.app.id}"
 
   ingress {
@@ -87,17 +87,17 @@ resource "aws_security_group" "app" {
 }
 
 resource "aws_key_pair" "app" {
-  key_name   = "app"
-  public_key = "${file("~/.ssh/id_rsa.pub")}"
+  key_name   = "${var.aws_key_name}"
+  public_key = "${file("${var.ssh_public_key_path}")}"
 }
 
 resource "aws_instance" "app" {
-  ami                         = "${data.aws_ami.debian9.id}"
-  instance_type               = "t2.micro"
+  ami                         = "${data.aws_ami.app.id}"
+  associate_public_ip_address = true
+  instance_type               = "${var.aws_instance_type}"
   key_name                    = "${aws_key_pair.app.id}"
   subnet_id                   = "${aws_subnet.app.id}"
   vpc_security_group_ids      = ["${aws_security_group.app.id}"]
-  associate_public_ip_address = true
 
   tags {
     Name = "app1"
