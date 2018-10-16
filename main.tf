@@ -18,54 +18,54 @@ data "aws_ami" "debian9" {
   }
 }
 
-resource "aws_vpc" "app" {
+resource "aws_vpc" "main" {
   cidr_block           = "192.168.0.0/16"
   enable_dns_hostnames = true
 
   tags {
-    Name = "Application VPC"
+    Name = "main"
   }
 }
 
 resource "aws_subnet" "app" {
-  vpc_id     = "${aws_vpc.app.id}"
   cidr_block = "192.168.2.0/24"
+  vpc_id     = "${aws_vpc.main.id}"
 
   tags {
-    Name = "Application Subnet"
+    Name = "app"
   }
 }
 
-resource "aws_internet_gateway" "app" {
-  vpc_id = "${aws_vpc.app.id}"
+resource "aws_internet_gateway" "main" {
+  vpc_id = "${aws_vpc.main.id}"
 
   tags {
-    Name = "Application Gateway"
+    Name = "main"
   }
 }
 
-resource "aws_route_table" "app" {
-  vpc_id = "${aws_vpc.app.id}"
+resource "aws_route_table" "main" {
+  vpc_id = "${aws_vpc.main.id}"
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.app.id}"
+    gateway_id = "${aws_internet_gateway.main.id}"
   }
 
   tags {
-    Name = "Application Public Subnet Route Table"
+    Name = "main"
   }
 }
 
 resource "aws_route_table_association" "app" {
   subnet_id      = "${aws_subnet.app.id}"
-  route_table_id = "${aws_route_table.app.id}"
+  route_table_id = "${aws_route_table.main.id}"
 }
 
 resource "aws_security_group" "app" {
-  name        = "app_ssh_http"
+  name        = "app"
   description = "Allow SSH, HTTP inbound traffic for application"
-  vpc_id      = "${aws_vpc.app.id}"
+  vpc_id      = "${aws_vpc.main.id}"
 
   ingress {
     from_port   = 22
@@ -89,11 +89,11 @@ resource "aws_security_group" "app" {
   }
 
   tags {
-    Name = "Application SG"
+    Name = "app"
   }
 }
 
-resource "aws_key_pair" "app" {
+resource "aws_key_pair" "main" {
   key_name   = "${var.aws_key_name}"
   public_key = "${file("${var.ssh_public_key_path}")}"
 }
@@ -102,11 +102,11 @@ resource "aws_instance" "app" {
   ami                         = "${data.aws_ami.debian9.id}"
   associate_public_ip_address = true
   instance_type               = "${var.aws_app_instance_type}"
-  key_name                    = "${aws_key_pair.app.id}"
+  key_name                    = "${aws_key_pair.main.id}"
   subnet_id                   = "${aws_subnet.app.id}"
   vpc_security_group_ids      = ["${aws_security_group.app.id}"]
 
   tags {
-    Name = "app1"
+    Name = "app"
   }
 }
