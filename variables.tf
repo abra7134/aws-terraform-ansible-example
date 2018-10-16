@@ -3,7 +3,7 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
-variable "aws_instance_type" {
+variable "aws_app_instance_type" {
   description = "Type of EC2 instances to created"
   default     = "t2.micro"
 }

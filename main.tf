@@ -94,7 +94,7 @@ resource "aws_key_pair" "app" {
 resource "aws_instance" "app" {
   ami                         = "${data.aws_ami.debian9.id}"
   associate_public_ip_address = true
-  instance_type               = "${var.aws_instance_type}"
+  instance_type               = "${var.aws_app_instance_type}"
   key_name                    = "${aws_key_pair.app.id}"
   subnet_id                   = "${aws_subnet.app.id}"
   vpc_security_group_ids      = ["${aws_security_group.app.id}"]
