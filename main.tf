@@ -18,6 +18,8 @@ data "aws_ami" "debian9" {
   }
 }
 
+data "aws_availability_zones" "available" {}
+
 resource "aws_vpc" "main" {
   cidr_block           = "192.168.0.0/16"
   enable_dns_hostnames = true
@@ -34,6 +36,22 @@ resource "aws_subnet" "app" {
   tags {
     Name = "app"
   }
+}
+
+resource "aws_subnet" "rds" {
+  availability_zone = "${element(data.aws_availability_zones.available.names, count.index)}"
+  cidr_block        = "192.168.${length(data.aws_availability_zones.available.names) + count.index}.0/24"
+  count             = "${length(data.aws_availability_zones.available.names)}"
+  vpc_id            = "${aws_vpc.main.id}"
+
+  tags {
+    Name = "rds-${element(data.aws_availability_zones.available.names, count.index)}"
+  }
+}
+
+resource "aws_db_subnet_group" "rds" {
+  name       = "postgres"
+  subnet_ids = ["${aws_subnet.rds.*.id}"]
 }
 
 resource "aws_internet_gateway" "main" {
@@ -93,6 +111,23 @@ resource "aws_security_group" "app" {
   }
 }
 
+resource "aws_security_group" "rds" {
+  name        = "rds"
+  description = "Allow Postgres traffic inbound traffic only from application"
+  vpc_id      = "${aws_vpc.main.id}"
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.app.id}"]
+  }
+
+  tags {
+    Name = "rds"
+  }
+}
+
 resource "aws_key_pair" "main" {
   key_name   = "${var.aws_key_name}"
   public_key = "${file("${var.ssh_public_key_path}")}"
@@ -108,5 +143,23 @@ resource "aws_instance" "app" {
 
   tags {
     Name = "app"
+  }
+}
+
+resource "aws_db_instance" "postgres" {
+  allocated_storage         = "${var.aws_rds_allocated_storage}"
+  db_subnet_group_name      = "${aws_db_subnet_group.rds.name}"
+  engine                    = "postgres"
+  engine_version            = "10.5"
+  instance_class            = "${var.aws_rds_instance_class}"
+  username                  = "${var.aws_rds_username}"
+  password                  = "${var.aws_rds_password}"
+  storage_type              = "gp2"
+  skip_final_snapshot       = true
+  final_snapshot_identifier = "Ignore"
+  vpc_security_group_ids    = ["${aws_security_group.rds.id}"]
+
+  tags {
+    Name = "rds"
   }
 }
