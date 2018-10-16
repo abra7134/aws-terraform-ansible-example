@@ -19,7 +19,7 @@ data "aws_ami" "debian9" {
 }
 
 resource "aws_vpc" "app" {
-  cidr_block           = "${var.aws_vpc_cidr_block}"
+  cidr_block           = "192.168.0.0/16"
   enable_dns_hostnames = true
 
   tags {
@@ -29,7 +29,7 @@ resource "aws_vpc" "app" {
 
 resource "aws_subnet" "app" {
   vpc_id     = "${aws_vpc.app.id}"
-  cidr_block = "${var.aws_vpc_cidr_block}"
+  cidr_block = "192.168.2.0/24"
 
   tags {
     Name = "Application Subnet"

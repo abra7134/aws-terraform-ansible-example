@@ -3,11 +3,6 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
-variable "aws_vpc_cidr_block" {
-  description = "AWS VPC CIDR block for instances"
-  default     = "192.168.2.0/24"
-}
-
 variable "aws_instance_type" {
   description = "Type of EC2 instances to created"
   default     = "t2.micro"
