@@ -1,15 +1,15 @@
 provider "aws" {
-  region     = "${var.aws_region}"
-  version    = "~> 1.40"
+  region  = "${var.aws_region}"
+  version = "~> 1.40"
 }
 
-data "aws_ami" "app" {
+data "aws_ami" "debian9" {
   most_recent = true
-  owners      = ["${var.aws_ami_owner_id}"]
+  owners      = ["379101102735"] # Official Debian account
 
   filter {
     name   = "name"
-    values = ["${var.aws_ami_filter_name}"]
+    values = ["debian-stretch-*"]
   }
 
   filter {
@@ -92,7 +92,7 @@ resource "aws_key_pair" "app" {
 }
 
 resource "aws_instance" "app" {
-  ami                         = "${data.aws_ami.app.id}"
+  ami                         = "${data.aws_ami.debian9.id}"
   associate_public_ip_address = true
   instance_type               = "${var.aws_instance_type}"
   key_name                    = "${aws_key_pair.app.id}"

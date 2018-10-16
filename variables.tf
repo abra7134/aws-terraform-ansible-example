@@ -13,16 +13,6 @@ variable "aws_instance_type" {
   default     = "t2.micro"
 }
 
-variable "aws_ami_owner_id" {
-  description = "Owner ID of AWS AMI's searching"
-  default     = "379101102735"                    # Official Debian account
-}
-
-variable "aws_ami_filter_name" {
-  description = "Name to search of AWS AMI's"
-  default     = "debian-stretch-*"
-}
-
 variable "aws_key_name" {
   description = "Name of ssh key to create"
   default     = "app"
