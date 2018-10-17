@@ -1,6 +1,5 @@
 variable "aws_region" {
   description = "AWS Region for instances created"
-  default     = "eu-central-1"
 }
 
 variable "aws_app_instance_type" {
@@ -20,12 +19,10 @@ variable "aws_key_name" {
 
 variable "ssh_public_key_path" {
   description = "Path to ssh public key used to be created this one on AWS"
-  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "ssh_private_key_path" {
   description = "Path to ssh private key used to connect to instance"
-  default     = "~/.ssh/id_rsa"
 }
 
 variable "ssh_username" {

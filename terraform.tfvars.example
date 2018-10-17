@@ -1,0 +1,8 @@
+# AWS Region for instances created
+aws_region = "eu-central-1"
+
+# Path to ssh public key used to create this one on AWS
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
+
+# Path to ssh private key used to connect to instance
+ssh_private_key_path = "~/.ssh/id_rsa"
