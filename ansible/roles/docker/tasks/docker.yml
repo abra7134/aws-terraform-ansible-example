@@ -1,0 +1,26 @@
+---
+- name: Install a apt-transport-https package
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Add a docker repository key
+  apt_key:
+    url: "{{ docker__repository_key_url }}"
+
+- name: Add a docker repository to /etc/apt/sources.list.d/
+  apt_repository:
+    repo: "deb {{ docker__repository_url }} {{ ansible_distribution_release }} stable"
+    update_cache: yes
+
+- name: Pin the actual docker version
+  template: >
+    src="docker_pin.j2"
+    dest="/etc/apt/preferences.d/00docker-ce"
+
+- name: Install a docker package
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-ce

@@ -1,0 +1,5 @@
+---
+# The Docker repository and key URLs
+# for tasks/docker.yml
+docker__repository_url: "https://download.docker.com/linux/debian"
+docker__repository_key_url: "https://download.docker.com/linux/debian/gpg"

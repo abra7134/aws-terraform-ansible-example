@@ -2,7 +2,7 @@
 - hosts: app
   become: yes
 
-  tasks:
+  pre_tasks:
     - name: Checking for a properly OS distribution
       fail:
         msg: For a properly working of this playbook the Debian 9 is required
@@ -13,3 +13,6 @@
       apt:
         update_cache: "yes"
         upgrade: "yes"
+
+  roles:
+    - docker

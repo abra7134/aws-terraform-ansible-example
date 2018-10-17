@@ -1,0 +1,4 @@
+---
+# Version of docker to be installed
+# for tasks/docker.yml
+docker_version: 18.06.1~ce~3-0~debian
