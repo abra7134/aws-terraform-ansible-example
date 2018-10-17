@@ -3,9 +3,19 @@ output "app_address" {
   value       = "${aws_instance.app.public_dns}"
 }
 
-output "postgres_endpoint" {
-  description = "Endpoint of Postgres"
-  value       = "${aws_db_instance.postgres.endpoint}"
+output "postgres_address" {
+  description = "Address of Postgres RDS"
+  value       = "${aws_db_instance.postgres.address}"
+}
+
+output "postgres_username" {
+  description = "Master username of Postgres SQL for administrative tasks"
+  value       = "${var.aws_rds_username}"
+}
+
+output "postgres_password" {
+  description = "Master password of Postgres SQL for administrative tasks"
+  value       = "${var.aws_rds_password}"
 }
 
 output "ansible_ssh_private_key_file" {
