@@ -1,0 +1,15 @@
+---
+- hosts: app
+  become: yes
+
+  roles:
+    - role: aws_postgres
+      aws_postgres_host: "{{ postgres_address }}"
+      aws_postgres_master_username: "{{ postgres_username }}"
+      aws_postgres_master_password: "{{ postgres_password }}"
+      aws_postgres_db_name: db1
+      aws_postgres_user_name: user1
+      aws_postgres_user_password: password1
+      aws_postgres_user_objs: ALL_IN_SCHEMA
+      aws_postgres_user_privs: CREATE,SELECT
+
