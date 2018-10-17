@@ -1,0 +1,3 @@
+---
+- include: aws_postgres.yml
+  tags: aws_postgres

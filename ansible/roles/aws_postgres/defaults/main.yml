@@ -1,0 +1,24 @@
+---
+# The database hostname and port to connect to
+# for tasks/aws_postgres.yml
+aws_postgres_host: localhost
+aws_postgres_port: 5432
+
+# The master username and password to authenticate with
+# for tasks/aws_postgres.yml
+aws_postgres_master_username: postgres
+aws_postgres_master_password: postgres
+
+# The database name to be created
+# for tasks/aws_postgres.yml
+aws_postgres_db_name:
+
+# The user name and password to be created
+# for tasks/aws_postgres.yml
+aws_postgres_user_name:
+aws_postgres_user_password:
+
+# The objects and privileges to set
+# for tasks/aws_postgres.yml
+aws_postgres_user_objs: ALL_IN_SCHEMA
+aws_postgres_user_privs: SELECT

@@ -1,0 +1,47 @@
+---
+  - name: Install dependencies for a properly working this role
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python-psycopg2
+
+  - name: Create a database
+    postgresql_db:
+      login_host: "{{ aws_postgres_host }}"
+      login_user: "{{ aws_postgres_master_username }}"
+      login_password: "{{ aws_postgres_master_password }}"
+      name: "{{ aws_postgres_db_name }}"
+      port: "{{ aws_postgres_port }}"
+    when:
+      - aws_postgres_db_name != None
+
+  - name: Create a user
+    postgresql_user:
+      db: "{{ aws_postgres_db_name }}"
+      encrypted: yes
+      login_host: "{{ aws_postgres_host }}"
+      login_user: "{{ aws_postgres_master_username }}"
+      login_password: "{{ aws_postgres_master_password }}"
+      name: "{{ aws_postgres_user_name }}"
+      password: "{{ aws_postgres_user_password }}"
+      port: "{{ aws_postgres_port }}"
+    when:
+      - aws_postgres_db_name != None
+      - aws_postgres_user_name != None
+
+  - name: Update a privileges of user
+    postgresql_privs:
+      db: "{{ aws_postgres_db_name }}"
+      login_host: "{{ aws_postgres_host }}"
+      login_user: "{{ aws_postgres_master_username }}"
+      login_password: "{{ aws_postgres_master_password }}"
+      role: "{{ aws_postgres_user_name }}"
+      objs: "{{ aws_postgres_user_objs }}"
+      port: "{{ aws_postgres_port }}"
+      privs: "{{ aws_postgres_user_privs }}"
+    when:
+      - aws_postgres_db_name != None
+      - aws_postgres_user_name != None
+      - aws_postgres_user_objs != None
+      - aws_postgres_user_privs != None
