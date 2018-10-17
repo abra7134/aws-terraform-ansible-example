@@ -14,5 +14,4 @@
         update_cache: "yes"
         upgrade: "yes"
 
-  roles:
-    - docker
+- import_playbook: install_docker.yml
