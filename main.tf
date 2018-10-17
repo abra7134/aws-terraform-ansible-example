@@ -144,6 +144,15 @@ resource "aws_instance" "app" {
   tags {
     Name = "app"
   }
+
+  provisioner "remote-exec" {
+    inline = ["# Connected!"]
+
+    connection {
+      user        = "${var.ssh_username}"
+      private_key = "${file("${var.ssh_private_key_path}")}"
+    }
+  }
 }
 
 resource "aws_db_instance" "postgres" {

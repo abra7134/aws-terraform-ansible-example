@@ -23,6 +23,16 @@ variable "ssh_public_key_path" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
+variable "ssh_private_key_path" {
+  description = "Path to ssh private key used to connect to instance"
+  default     = "~/.ssh/id_rsa"
+}
+
+variable "ssh_username" {
+  description = "SSH username to connect to instance"
+  default     = "admin"
+}
+
 variable "aws_rds_allocated_storage" {
   description = "A size of storage to be allocated for a RDS"
   default     = "20"
